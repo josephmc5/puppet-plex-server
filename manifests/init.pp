@@ -13,7 +13,7 @@ class plex-server inherits plex-server::params {
         }   
         package { 'plexmediaserver':
             ensure  => present,
-            require => Apt::Source['plex'],
+            require => Apt::Source['plexmediaserver'],
         }
         service { 'plexmediaserver':
             ensure => running,
