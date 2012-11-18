@@ -1,5 +1,5 @@
-class plex-server {
-    if $operatingsystem = 'Ubuntu' {
+class plex-server inherits plex-server::params {
+    if $operatingsystem == 'Ubuntu' {
         include apt
         apt::source { "plex":
             location => "http://plexapp.com/repo",
@@ -14,6 +14,34 @@ class plex-server {
         package { 'plexmediaserver':
             ensure  => present,
             require => Apt::Source['plex'],
+        }
+        service { 'plexmediaserver':
+            ensure => running,
+        }
+        file { 'plex-dir':
+            ensure => directory,
+            path => "$base_dir/plexmediaserver",
+            owner => 'plex',
+            group => 'plex',
+            mode => '0744',
+        }
+        file { 'plex-data-dir':
+            ensure => directory,
+            path => "$base_dir/plexmediaserver/data",
+            owner => 'plex',
+            group => 'plex',
+            mode => '0744',
+            require => File['plex-dir'],
+        }
+        file { 'plex-config':
+            ensure => present,
+            path   => '/etc/default/plexmediaserver',
+            content => template('plex-server/plexmediaserver.erb'),
+            owner => 'plex',
+            group => 'plex',
+            mode => '0644',
+            require => File['plex-data-dir'],
+            notify => Service['plexmediaserver'],
         }
     }
 }
