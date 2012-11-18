@@ -1,7 +1,7 @@
 class plex-server inherits plex-server::params {
     if $operatingsystem == 'Ubuntu' {
         include apt
-        apt::source { "plex":
+        apt::source { "plexmediaserver":
             location => "http://plexapp.com/repo",
             release => "lucid",
             repos => "main",
