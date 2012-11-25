@@ -11,6 +11,13 @@ class plex-server inherits plex-server::params {
     #        key_server => "subkeys.pgp.net",
             pin => "500"
         }   
+        user { 'plex':
+            allowdupe => false,
+            ensure => 'present',
+            shell => '/bin/bash',
+            home => "$base_dir/plexmediaserver",
+            password => '*',
+        }
         package { 'plexmediaserver':
             ensure  => present,
             require => Apt::Source['plexmediaserver'],
