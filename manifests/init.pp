@@ -11,13 +11,10 @@ class plex-server inherits plex-server::params {
     #        key_server => "subkeys.pgp.net",
             pin => "500"
         }   
-        user { 'plex':
-            allowdupe => false,
-            ensure => 'present',
-            shell => '/bin/bash',
-            home => "$base_dir/plexmediaserver",
-            password => '*',
-        }
+#        user { "$services_user":
+#            allowdupe => false,
+#            ensure => 'present',
+#        }
         package { 'plexmediaserver':
             ensure  => present,
             require => Apt::Source['plexmediaserver'],
@@ -28,15 +25,15 @@ class plex-server inherits plex-server::params {
         file { 'plex-dir':
             ensure => directory,
             path => "$base_dir/plexmediaserver",
-            owner => 'plex',
-            group => 'plex',
+            owner => "$services_user",
+            group => "$services_user",
             mode => '0744',
         }
         file { 'plex-data-dir':
             ensure => directory,
             path => "$base_dir/plexmediaserver/data",
-            owner => 'plex',
-            group => 'plex',
+            owner => "$services_user",
+            group => "$services_user",
             mode => '0744',
             require => File['plex-dir'],
         }
@@ -44,8 +41,8 @@ class plex-server inherits plex-server::params {
             ensure => present,
             path   => '/etc/default/plexmediaserver',
             content => template('plex-server/plexmediaserver.erb'),
-            owner => 'plex',
-            group => 'plex',
+            owner => "$services_user",
+            group => "$services_user",
             mode => '0644',
             require => File['plex-data-dir'],
             notify => Service['plexmediaserver'],

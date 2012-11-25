@@ -7,6 +7,7 @@ class plex-server::params (
     $logrotate = hiera("logrotate", "false"),
 )
 {
+    $services_user = hiera("services_user")
     $log_dir = "$base_dir/plexmediaserver/log"
     $data_dir = "$base_dir/plexmediaserver/data"
     $cache_dir = "$base_dir/plexmediaserver/cache"
